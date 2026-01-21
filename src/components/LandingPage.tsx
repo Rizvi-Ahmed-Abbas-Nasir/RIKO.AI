@@ -81,7 +81,8 @@ export default function RikoHome() {
   setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
   try {
-    const response = await fetch("https://82.112.235.182:11434/api/chat", {
+   
+const response = await fetch("http://localhost:3001/api/RikoChat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +145,7 @@ export default function RikoHome() {
   <div className="w-full">
     <div className="relative w-full rounded-xl bg-gradient-to-b from-[#FFF8EE]/80 via-[#FFEFEA]/60 to-[#FBF5FF]/60">
 
-      {/* HEADER */}
+    
       <header className="flex items-center justify-between bg-white rounded-t-xl px-6 py-4">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Riko.ai" className="h-8 w-auto" />
@@ -233,7 +234,7 @@ export default function RikoHome() {
          
 
         
-          <div className="w-full max-w-[804px] bg-[#FAFAF8] border border-[#FFEBD3] rounded-2xl shadow px-6 py-6 space-y-4">
+          <div className="w-full max-w-[804px]  rounded-2xl  space-y-4">
            <div className="space-y-4">
   {messages.map((msg, i) => (
     <div
