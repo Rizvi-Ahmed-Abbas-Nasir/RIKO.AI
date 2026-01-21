@@ -82,7 +82,7 @@ export default function RikoHome() {
 
   try {
    
-const response = await fetch("http://localhost:3001/api/RikoChat", {
+const response = await fetch("http://riko-backend.vercel.app/api/RikoChat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
