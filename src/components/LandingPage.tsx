@@ -81,7 +81,7 @@ export default function RikoHome() {
   setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
   try {
-    const response = await fetch("http://82.112.235.182:11434/api/chat", {
+    const response = await fetch("https://82.112.235.182:11434/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
