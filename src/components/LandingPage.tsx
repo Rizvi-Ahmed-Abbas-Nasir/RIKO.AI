@@ -88,7 +88,7 @@ const response = await fetch("https://riko-backend.vercel.app/api/RikoChat", {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "deepseek-r1:1.5b",
+        model: "phi:latest",
         messages: [...messages, userMessage],
         stream: true,
       }),
