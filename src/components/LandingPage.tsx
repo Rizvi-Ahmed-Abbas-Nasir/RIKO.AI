@@ -83,7 +83,7 @@ const sendMessage = async () => {
 
   try {
     // Change URL to your backend and set stream: false
-    const response = await fetch("https://https://riko-ai-d2cj.vercel.app/api/RikoChat", {
+    const response = await fetch("https://riko-ai-d2cj.vercel.app/api/RikoChat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
