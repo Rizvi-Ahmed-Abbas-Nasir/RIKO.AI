@@ -63,8 +63,7 @@ export default function RikoHome() {
       }
     }, 20); 
   };
-
-  const sendMessage = async () => {
+const sendMessage = async () => {
   if (!userPrompt.trim()) return;
 
   const userMessage: ChatMessage = {
@@ -72,68 +71,84 @@ export default function RikoHome() {
     content: userPrompt,
   };
 
-  setMessages((prev) => [...prev, userMessage]);
+  // Update messages
+  const updatedMessages = [...messages, userMessage];
+  setMessages(updatedMessages);
   setUserPrompt("");
   setHasChatStarted(true);
   setIsLoading(true);
 
-  
+  // Add empty assistant message placeholder
   setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
   try {
-   
-const response = await fetch("https://riko-backend.vercel.app/api/RikoChat", {
+    // Change URL to your backend and set stream: false
+    const response = await fetch("https://https://riko-ai-d2cj.vercel.app/api/RikoChat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "phi:latest",
-        messages: [...messages, userMessage],
-        stream: true,
+        messages: updatedMessages,
+        stream: false, // ← CHANGE THIS TO false
       }),
     });
 
-    if (!response.body) {
-      throw new Error("No response body");
+    console.log("Response status:", response.status);
+    
+    // Get the response as text first for debugging
+    const responseText = await response.text();
+    console.log("Raw response text:", responseText);
+    
+    // Try to parse JSON
+    let data;
+    try {
+      data = JSON.parse(responseText);
+      console.log("Parsed response:", data);
+    } catch (parseError) {
+      console.error("Failed to parse JSON:", parseError);
+      console.error("Raw text was:", responseText);
+      throw new Error("Invalid JSON response");
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
+    // Extract the AI response
+    const aiResponse = data.response || data.message?.content || data.content || data.answer || "No response";
+    console.log("AI Response extracted:", aiResponse);
 
-    let assistantText = "";
+   // Stop loader, start typing animation
+setIsLoading(false);
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
+// Simulate typing into the last assistant message
+simulateTyping(
+  aiResponse,
+  (partialText) => {
+    setMessages((prev) => [
+      ...prev.slice(0, -1),
+      { role: "assistant", content: partialText },
+    ]);
+  },
+  () => {
+    // Typing finished
+    console.log("✅ Typing complete");
+  }
+);
 
-      const chunk = decoder.decode(value);
-      const lines = chunk.split("\n").filter(Boolean);
 
-      for (const line of lines) {
-        try {
-          const json = JSON.parse(line);
+    setIsLoading(false);
 
-          if (json.message?.content) {
-            assistantText += json.message.content;
-
-          
-            setMessages((prev) => [
-              ...prev.slice(0, -1),
-              { role: "assistant", content: assistantText },
-            ]);
-          }
-
-          if (json.done) {
-            setIsLoading(false);
-          }
-        } catch (err) {
-         
-        }
-      }
-    }
   } catch (error) {
     console.error("Chat error:", error);
+    
+    // Update with error message
+    setMessages((prev) => [
+      ...prev.slice(0, -1),
+      { 
+        role: "assistant", 
+        content: `Error:  Please check your backend server.` 
+      },
+    ]);
+    
     setIsLoading(false);
   }
 };
